@@ -1,3 +1,22 @@
+// Get the input field element by its ID
+var inputField = document.getElementById("search-input"); // Replace with the actual ID of your input field
+
+// Get the "results-count_wrapper" div by its ID
+var resultsCountWrapper = document.getElementById("results-count_wrapper");
+
+// Get the element where you want to display the input text
+var resultsCountTextSearchInput = document.getElementById("results-count-text_search-input");
+
+// Get the element where you want to display the categories or collections value
+var resultsCountTextCollection = document.getElementById("results-count-text_collection");
+
+// Get all checkboxes inside the integration-feature_filters div
+var checkboxes = document.querySelectorAll(".integration-feature_filters input[type='checkbox']");
+
+// Get all radios inside the integration-feature_filters div
+var radios = document.querySelectorAll(".integration-feature_filters input[type='radio']");
+
+
 //
 // Active class behaviour
 //
@@ -28,9 +47,7 @@ function removeAllSpansFromAllRadios() {
     });
 }
 
-//
-// Create link for "See all" in the .integrations-collections-landing_wrapper and add uery parameter to URL
-//
+// Create link for "See all" in the .integrations-collections-landing_wrapper and add query parameter to URL
 function createCollectionsLandingLink() {
     // Get all elements with class "integrations-collections-landing_wrapper"
     var sectionWrappers = document.querySelectorAll(".integrations-collections-landing_wrapper");
@@ -61,14 +78,19 @@ function createCollectionsLandingLink() {
     });
 }
 
+// Function to create a link for the button in the special landing collections to be linked to specific collection
 function createSpecialCollectionsLandingLink() {
     let specialCollections = document.querySelectorAll(".collections-special-landing_left")
 
     specialCollections.forEach(function (collection) {
         let buttonLink = collection.querySelector("a");
-        let collectionNanme = collection.querySelector(".collections-special-landing_collection-name");
+        let collectionName = collection.querySelector(".collections-special-landing_collection-name");
 
-        let collectionNameText = collectionNanme.textContent;
+        let collectionNameText = collectionName.textContent;
+
+        collectionName.style.display = 'none';
+
+
         var queryValue = collectionNameText.replace(/ /g, "+");
 
         buttonLink.addEventListener("click", function (e) {
@@ -108,6 +130,65 @@ function updateResultsCount() {
     }
 }
 
+function handleCheckboxChange() {
+    console.log("running function handleCheckboxChange");
+    toggleResultsCount(); // Call the toggle function when a checkbox is changed
+}
+
+function handleRadioChange() {
+    console.log("running function handleRadioChange");
+    
+    setTimeout(toggleResultsCount, 100); // Call the toggle function when a checkbox is changed
+}
+
+function anyCheckboxChecked() {
+    // Check if any checkbox is checked
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) return true;
+    }
+    return false;
+}
+
+// Function to show or hide the "results-count_wrapper" div based on input field value
+function toggleResultsCount() {
+    var inputText = inputField.value.trim(); // Get the trimmed input field value
+    if (inputText.length > 0) { // Check if something is typed in
+        resultsCountTextSearchInput.textContent = 'for "' + inputText + '"'; // Display the input text surrounded by quotation marks
+    } else {
+        resultsCountTextSearchInput.textContent = ""; // Clear the text if nothing is typed in
+    }
+
+    var urlParams = new URLSearchParams(window.location.search);
+
+    var integrationsValue = urlParams.get("integrations");
+    
+    var collectionsValue = urlParams.get("collections");
+    
+    var categoriesValue = urlParams.get("categories");
+    
+
+    if (integrationsValue !== null && inputText !== "" || anyCheckboxChecked()) {
+        resultsCountWrapper.style.display = "block"; // Show the "results-count_wrapper" div when conditions are met
+    } else {
+        resultsCountWrapper.style.display = "none"; // Hide the "results-count_wrapper" div otherwise
+    }
+
+    if (collectionsValue !== null) {
+        // Replace "+" with " " and display the collections value within quotation marks
+        resultsCountTextCollection.textContent = 'in "' + collectionsValue.replace(/\+/g, " ") + '"';
+    } else if (categoriesValue !== null) {
+        // Replace "+" with " " and display the categories value within quotation marks
+        resultsCountTextCollection.textContent = 'in "' + categoriesValue.replace(/\+/g, " ") + '"';
+    } else {
+        // If neither parameter is present, clear the text in the div
+        resultsCountTextCollection.textContent = "";
+    }
+
+    console.log(integrationsValue);
+    console.log(collectionsValue);
+    console.log(categoriesValue);
+}
+
 
 window.fsAttributes = window.fsAttributes || [];
 
@@ -123,71 +204,18 @@ function runMyScript() {
     createCollectionsLandingLink();
     createSpecialCollectionsLandingLink();
 
-
-
-    // Get the input field element by its ID
-    var inputField = document.getElementById("search-input"); // Replace with the actual ID of your input field
-
-    // Get the "results-count_wrapper" div by its ID
-    var resultsCountWrapper = document.getElementById("results-count_wrapper");
-
-    // Get the element where you want to display the input text
-    var resultsCountTextSearchInput = document.getElementById("results-count-text_search-input");
-
-    // Get the element where you want to display the categories or collections value
-    var resultsCountTextCollection = document.getElementById("results-count-text_collection");
-
-    // Get all checkboxes inside the integration-feature_filters div
-    var checkboxes = document.querySelectorAll(".integration-feature_filters input[type='checkbox']");
-
-    function anyCheckboxChecked() {
-        // Check if any checkbox is checked
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) return true;
-        }
-        return false;
-    }
-
-    function handleCheckboxChange() {
-        toggleResultsCount(); // Call the toggle function when a checkbox is changed
-    }
-
+    
     // Add event listeners to all checkboxes
     checkboxes.forEach(function(checkbox) {
         checkbox.addEventListener("change", handleCheckboxChange);
     });
 
-    // Function to show or hide the "results-count_wrapper" div based on input field value
-    function toggleResultsCount() {
-        var inputText = inputField.value.trim(); // Get the trimmed input field value
-        if (inputText.length > 0) { // Check if something is typed in
-            resultsCountTextSearchInput.textContent = 'for "' + inputText + '"'; // Display the input text surrounded by quotation marks
-        } else {
-            resultsCountTextSearchInput.textContent = ""; // Clear the text if nothing is typed in
-        }
+    // Add event listeners to all radios
+    radios.forEach(function(radio) {
+        radio.addEventListener("change", handleRadioChange);
+    });
 
-        var urlParams = new URLSearchParams(window.location.search);
-        var integrationsValue = urlParams.get("integrations");
-        var collectionsValue = urlParams.get("collections");
-        var categoriesValue = urlParams.get("categories");
 
-        if (integrationsValue !== null && inputText !== "" || anyCheckboxChecked()) {
-            resultsCountWrapper.style.display = "block"; // Show the "results-count_wrapper" div when conditions are met
-        } else {
-            resultsCountWrapper.style.display = "none"; // Hide the "results-count_wrapper" div otherwise
-        }
-
-        if (collectionsValue !== null) {
-            // Replace "+" with " " and display the collections value within quotation marks
-            resultsCountTextCollection.textContent = 'in "' + collectionsValue.replace(/\+/g, " ") + '"';
-        } else if (categoriesValue !== null) {
-            // Replace "+" with " " and display the categories value within quotation marks
-            resultsCountTextCollection.textContent = 'in "' + categoriesValue.replace(/\+/g, " ") + '"';
-        } else {
-            // If neither parameter is present, clear the text in the div
-            resultsCountTextCollection.textContent = "";
-        }
-    }
 
     // Target element with class .integration-radio
     const integrationRadioElements = document.querySelectorAll(".integration-radio");
