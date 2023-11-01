@@ -620,9 +620,9 @@ function createCollectionsLandingLink() {
     sectionWrappers.forEach(function(wrapper) {
         // Get the h2 element and link within the current section wrapper
         var titleElement = wrapper.querySelector(".integrations-collections-landing_title-wrapper h2");
-        console.log(titleElement);
+        // console.log(titleElement);
         var addQueryLink = wrapper.querySelector(".integrations-collections-landing_title-wrapper a");
-        console.log(addQueryLink);
+        // console.log(addQueryLink);
         // Extract the title text and convert it to the query value
         var titleText = titleElement.textContent;
         var queryValue = titleText.replace(/ /g, "+");
@@ -672,11 +672,11 @@ function updateResultsCount() {
     else emptyStateDiv.style.display = "block";
 }
 function handleCheckboxChange() {
-    console.log("running function handleCheckboxChange");
+    // console.log("running function handleCheckboxChange");
     toggleResultsCount(); // Call the toggle function when a checkbox is changed
 }
 function handleRadioChange() {
-    console.log("running function handleRadioChange");
+    // console.log("running function handleRadioChange");
     setTimeout(toggleResultsCount, 100); // Call the toggle function when a checkbox is changed
 }
 function anyCheckboxChecked() {
@@ -703,9 +703,9 @@ function toggleResultsCount() {
     resultsCountTextCollection.textContent = 'in "' + categoriesValue.replace(/\+/g, " ") + '"';
     else // If neither parameter is present, clear the text in the div
     resultsCountTextCollection.textContent = "";
-    console.log(integrationsValue);
-    console.log(collectionsValue);
-    console.log(categoriesValue);
+// console.log(integrationsValue);
+// console.log(collectionsValue);
+// console.log(categoriesValue);
 }
 window.fsAttributes = window.fsAttributes || [];
 // Flags to check if the scripts have loaded
@@ -714,9 +714,10 @@ let cmsnestLoaded = false;
 // Common function to check if both scripts are loaded, then run your logic
 function runMyScript() {
     if (cmsfilterLoaded && cmsnestLoaded) {
-        console.log("Both cmsfilter and cmsnest have loaded.");
+        // console.log('Both cmsfilter and cmsnest have loaded.');
         createCollectionsLandingLink();
         createSpecialCollectionsLandingLink();
+        updateResultsCount();
         // Add event listeners to all checkboxes
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener("change", handleCheckboxChange);
@@ -776,7 +777,7 @@ function runMyScript() {
 window.fsAttributes.push([
     "cmsfilter",
     (listInstances)=>{
-        console.log("cmsfilter Successfully loaded!");
+        //   console.log('cmsfilter Successfully loaded!');
         window.fsAttributes.cmsfilter.init();
         cmsfilterLoaded = true;
         runMyScript();
@@ -786,7 +787,7 @@ window.fsAttributes.push([
 window.fsAttributes.push([
     "cmsnest",
     (listInstances)=>{
-        console.log("cmsnest Successfully loaded!");
+        // console.log('cmsnest Successfully loaded!');
         // window.fsAttributes.cmsnest.init();
         cmsnestLoaded = true;
         runMyScript();
