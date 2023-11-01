@@ -579,6 +579,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var inputField = document.getElementById("search-input"); // Replace with the actual ID of your input field
 // Get the "results-count_wrapper" div by its ID
 var resultsCountWrapper = document.getElementById("results-count_wrapper");
+resultsCountWrapper.style.display = "none";
 // Get the element where you want to display the input text
 var resultsCountTextSearchInput = document.getElementById("results-count-text_search-input");
 // Get the element where you want to display the categories or collections value
@@ -754,10 +755,10 @@ function runMyScript() {
                 ]
             }); // adding attributeFilter to specifically watch for class changes
         });
-        // Add an event listener to the input field to detect when someone types or deletes text
-        inputField.addEventListener("input", toggleResultsCount);
         // Trigger the function on page load in case there are existing query parameters or initial input
         toggleResultsCount();
+        // Add an event listener to the input field to detect when someone types or deletes text
+        inputField.addEventListener("input", toggleResultsCount);
         window.addEventListener("popstate", toggleResultsCount);
         // Update the results count
         // updateResultsCount();
